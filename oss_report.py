@@ -27,8 +27,25 @@ print(X_test.shape)
 
 #모델 선택 and 학습
 from sklearn.neighbors import KNeighborsClassifier
+import numpy as np
 
-knn = KNeighborsClassifier(n_neighbors=6)
+# 최적의 k값 찾기
+best_k = 1
+best_accuracy = 0
+
+for k in range(1, 30):
+  knn = KNeighborsClassifier(k)
+  knn.fit(X_train, y_train)
+  y_pred = knn.predict(X_test)
+  accuracy = np.sum(y_pred == y_test) / len(y_test)
+  if accuracy > best_accuracy:
+    best_accuracy = accuracy
+    best_k = k
+
+  print(f'accuracy: {accuracy}  k: {k}')
+
+#최적의 k값으로 학습
+knn = KNeighborsClassifier(best_k)
 knn.fit(X_train, y_train)
 
 #평가
